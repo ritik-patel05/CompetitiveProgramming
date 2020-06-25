@@ -1,3 +1,12 @@
+/*
+	Author: Ritik Patel
+	
+	Idea: 
+		      - Distinct primes from x and y will be minimum size of space.
+        - Difference between powers of x and y will be distance required.
+        - Use sieve to store minimum prime factor to prime factorize and store in map
+*/
+
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& STL DEBUGGER &&&&&&&&&&&&&&&&&&&&&&&&&&&
 
