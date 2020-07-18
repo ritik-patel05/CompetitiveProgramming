@@ -29,6 +29,7 @@ struct matrix{
 
     matrix operator + (const matrix &o) const{
         matrix res;
+        res.reset();
         for(int i = 0; i < SZ; ++i){
             for(int j = 0; j < SZ; ++j){
                 res.arr[i][j] = add(arr[i][j], o.arr[i][j]);
