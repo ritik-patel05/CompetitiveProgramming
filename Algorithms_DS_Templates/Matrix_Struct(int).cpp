@@ -32,7 +32,7 @@ struct matrix{
         res.reset();
         for(int i = 0; i < SZ; ++i){
             for(int j = 0; j < SZ; ++j){
-                add(res.arr[i][j], add(arr[i][j], o.arr[i][j]) );
+                res.arr[i][j] = add(arr[i][j], o.arr[i][j]);
             }
         }
         return res;
