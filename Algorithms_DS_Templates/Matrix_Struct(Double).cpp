@@ -1,5 +1,5 @@
 double add(double a, double b){
-    int res = a + b;
+    double res = a + b;
     // if(res >= MOD)
     //     return res - MOD;
     return res;
