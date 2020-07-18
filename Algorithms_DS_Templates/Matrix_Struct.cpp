@@ -61,3 +61,5 @@ matrix power(matrix a, int b){
     }
     return res;
 }
+
+// Source: https://github.com/Ashishgup1/Competitive-Coding/blob/master/Matrix%20Struct.cpp
