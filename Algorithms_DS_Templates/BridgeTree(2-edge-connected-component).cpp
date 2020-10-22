@@ -71,6 +71,9 @@ void bridge_tree() {
     initB();
     
     dfs(1, -1); //Assuming graph is connected.
+    
+    for(int i = 1; i <= N; ++i)
+        used[i] = 0;
 
     for(int i = 1; i <= N; ++i) {
         if(!used[i]) {
