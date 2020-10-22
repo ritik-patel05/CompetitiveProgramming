@@ -34,7 +34,11 @@ void dfs1(int v, int p) {
     for(auto &e: g[v]) {
         int to, id;
         tie(to, id) = e;
-        if(isBridge[id] or used[to]) { // avoid traversing from this edge. so we get full component.
+        
+        if(isBridge[id]) { // avoid traversing from this edge. so we get full component.
+            continue;
+        }
+        if(used[to]) {
             continue;
         }
         dfs1(to, v);
