@@ -53,16 +53,24 @@ void addEdge(int from, int to, int id) {
     edges[id] = {from, to};
 }
 
-void bridge_tree() {
-    timer = 0;
+void initB() {
+
+    for(int i = 0; i <= compid; ++i)
+        tree[i].clear();
     for(int i = 1; i <= N; ++i)
-        used[i] = 0;
+        used[i] = false;
+    for(int i = 1; i <= M; ++i)
+        isBridge[i] = false;
+    
+    timer = 0;
+    compid = 0;
+}
+
+void bridge_tree() {
+
+    initB();
     
     dfs(1, -1); //Assuming graph is connected.
-
-    compid = 0;
-    for(int i = 1; i <= N; ++i)
-        used[i] = 0;
 
     for(int i = 1; i <= N; ++i) {
         if(!used[i]) {
@@ -82,46 +90,22 @@ void bridge_tree() {
     }
 }
 
+void init() {
+    edges.clear(); edges.resize(M + 1);
+    for(int i = 1; i <= N; ++i)
+        g[i].clear();
+}
+
 void solve() {
     cin >> N >> M;
-    edges.resize(M + 1);
+
+    init();
+
     for(int i = 1; i <= M; ++i) {
         int u, v;
         cin >> u >> v; addEdge(u, v, i);
     }
+
     bridge_tree();
 
-    cout << "Each node belongs to components-id: \n";
-    for(int i = 1; i <= N; ++i) {
-        debug(i, comp[i]);
-    }
-
-    cout << "Tree is \n";
-    for(int i = 0; i < compid; ++i) {
-        cout << i << " Its son's are: ";
-        for(auto &x: tree[i])
-            cout << x << " ";
-        cout << '\n';
-    }
-
 }
-
-
-
-
-int32_t main(){
-    // freopen("input.txt","r",stdin);
-    // freopen("output.txt","w",stdout); 
-    ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr);
-    int T = 1; 
-    // cin >> T;
-    for(int i = 1; i <= T; ++i){
-        // cout << "Case #" << i << ": ";
-        solve();
-    }
-    return 0;
-}
-
-//  Problem: https://codeforces.com/contest/652/problem/E
-// Submission: https://codeforces.com/contest/652/submission/96365943
- 
