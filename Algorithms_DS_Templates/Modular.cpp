@@ -1,3 +1,5 @@
+// Taken from neal(https://codeforces.com/profile/neal)
+
 template<const int &MOD>
 struct _m_int {
     int val;
