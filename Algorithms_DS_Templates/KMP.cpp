@@ -1,4 +1,8 @@
-// Construct Prefix function for string s in Time complexity: O(n) and Space Complexity: O(n);
+/**
+ * Description: pi[x] computes the length of the longest prefix of s that ends at x, other than s[0...x] itself (abacaba -> 0010123).
+ * Can be used to find all occurrences of a string.
+ * Time: O(n)
+ */
 vector<int> prefix_function(string &s) {
     int n = s.size();
     vector<int> pi(n, 0);
