@@ -102,8 +102,12 @@ class SegmentTree {
             }
             eval_lazy(id, tl, tr);
             int mid = (tl + tr) >> 1;
-            node a = update(lc(id), tl, mid, pos, v),
-                 b = update(rc(id), mid + 1, tr, pos, v);
+            node a = tree[lc(id)], b = tree[rc(id)];
+            if(pos <= mid) {
+                a = update(lc(id), tl, mid, pos, v);
+            } else {
+                b = update(rc(id), mid + 1, tr, pos, v);
+            }
             
             return tree[id] = a.merge(b);
         }
