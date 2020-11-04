@@ -1,6 +1,6 @@
 /**
  * Description: RMQ using Sparse table.
- * Can be used to find min/max in a range.
+ * Can be used to find min/max/gcd/lcm in a range.
  * Query Time: O(1)
  * Space:  O(NlogN)
  * 0-Indexing.
