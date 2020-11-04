@@ -1,14 +1,17 @@
 const int MAXN = 1e5 + 5;
 vector<int> parent, inTime, outTime, euler_order;
 vector<bool> vis;
+vector<int> g[MAXN];
+int timer = 0;
 
 void init(int _sz) {
     parent.resize(_sz), inTime.resize(_sz), outTime.resize(_sz), euler_order.resize(_sz);
     vis.assign(_sz, 0);
+    timer = 0;
 }
 
 void dfs(int v, int p = -1) {
-    parent[v] = v;
+    parent[v] = p;
     vis[v] = true;
     inTime[v] = ++timer;
     euler_order[timer] = v;
