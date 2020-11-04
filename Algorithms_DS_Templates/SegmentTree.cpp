@@ -62,12 +62,13 @@ class SegmentTree {
                 }
                 //Reset this node
                 isLazy[id] = false;
+                lazy[id] = 0;
             }
         }
 
         node build(int id, int tl, int tr, vector<int> &arr) {
             if(tl == tr) {
-                tree[id] = arr[tl];
+                tree[id] = node(arr[tl]);
                 return tree[id];
             }
             int mid = (tl + tr) >> 1;
