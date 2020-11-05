@@ -44,12 +44,9 @@ void precompute() {
 int LCA(int u, int v) {
 
 	if (level[u] < level[v]) swap(u,v);
-	int diff = level[u]-level[v];
-	for (int i = LG - 1; i >= 0; --i) {
-		if ( (1 << i) & diff ) {
-			u = parent[i][u];
-		}
-	}
+	int diff = level[u] - level[v];
+	u = walk(u, diff);
+	
 	if (u == v) return u;
 
 	for (int i = LG - 1; i >= 0; --i) {
