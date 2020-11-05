@@ -13,17 +13,29 @@ const int LG = log2(MAXN);
 int timer = 0, n;
 int parent[LG][MAXN];
 int tin[MAXN], tout[MAXN], level[MAXN];
-vector<int> g[MAXN];
+vector<int> g[MAXN], euler_order(MAXN);
+
+// Used in problems for finding closest ancestor of a specific color.
+// stack<int> stck; 
+// vector<pair<int, int>> CUR:
 
 void dfs(int v, int par, int lvl) {
-	tin[v] = ++timer;
+	tin[v] = timer++;
 	parent[0][v] = par;
 	level[v] = lvl;
+	euler_order[tin[v]] = v;
+	
+	// Activate only for closest ancestor.
+	// stck.push(v);
+	// CUR.push_back({tin[v], v});
 	for (auto &to: g[v]) {
 		if (to == par) continue;
 		dfs(to, v, lvl + 1);
 	}
-	tout[v] = timer;
+	tout[v] = timer - 1;
+	
+	// stck.pop();
+	// CUR.push_back({timer, stck.empty() ? 0 : stck.top() });
 }
 
 int walk(int u, int h) {
@@ -66,3 +78,8 @@ void preProcessLCA(int root) {
     dfs(root, -1, 0);
     precompute();
 }
+
+/* 
+Problem(Finding Closest ancestor of a specific color): http://www.usaco.org/index.php?page=viewproblem2&cpid=970
+Solution: https://ideone.com/VPEZXn
+*/
