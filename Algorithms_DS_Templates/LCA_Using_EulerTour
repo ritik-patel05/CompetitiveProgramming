@@ -1,83 +1,87 @@
 /**
  * Description: Finds LCA between two nodes in a tree in O(logN).
- * Can be used to find distance/xor/min/max/addition/gcd/lcm/ OR / Any cumulative property between two nodes.
+ * Can be used to find distance/xor/addition/gcd/lcm/ OR / Any cumulative property between two nodes.
  * If updations are reqd: we can use segment tree of nodes maintaining prefix array from root as nodes.
  * Query Time: O(logN)
  * Space:  O(NlogN)
  * Build Time: O(NlogN)
- * 1-Indexing.
+ * 0-Indexing.
  */
 
-const int MAXN = 1e5 + 5;
-const int LG = log2(MAXN);
-int timer = 0, n;
-int parent[LG][MAXN];
-int tin[MAXN], tout[MAXN], level[MAXN];
-vector<int> g[MAXN], euler_order(MAXN);
+template<int size>
+class LCA_EULER_TOUR {
+    private:
+        int LG = 32 - __builtin_clz(size);
 
-// Used in problems for finding closest ancestor of a specific color.
-// stack<int> stck; 
-// vector<pair<int, int>> CUR:
+        void lca_dfs(int v, int p, int lvl) {
+            in[v] = timer++;
+            euler_order[in[v]] = v;
+            par[0][v] = p;
+            level[v] = lvl;
 
-void dfs(int v, int par, int lvl) {
-	tin[v] = timer++;
-	parent[0][v] = par;
-	level[v] = lvl;
-	euler_order[tin[v]] = v;
-	
-	// Activate only for closest ancestor.
-	// stck.push(v);
-	// CUR.push_back({tin[v], v});
-	for (auto &to: g[v]) {
-		if (to == par) continue;
-		dfs(to, v, lvl + 1);
-	}
-	tout[v] = timer - 1;
-	
-	// stck.pop();
-	// CUR.push_back({timer, stck.empty() ? 0 : stck.top() });
-}
+            for (int i = 1; i < LG; ++i) {
+                if (par[i][v] == -1) continue;
+                par[i][v] = par[i - 1][par[i - 1][v]];
+            }
 
-int walk(int u, int h) {
-	for (int i = LG - 1; i >= 0; --i)
-		if ((h>>i) & 1)
-			u = parent[i][u];
-	
-	return u;
-}
+            for (auto &to: edges[v]) {
+                if (to == p) continue;
+                dfS(to, v, lvl + 1);
+            }
 
-void precompute() {
-	for (int i = 1; i < LG; ++i)
-		for (int j = 1; j <= n; ++j)
-			if (parent[i-1][j])
-				parent[i][j] = parent[i-1][parent[i-1][j]];
-}
+            out[v] = timer - 1;
+        }
 
-int LCA(int u, int v) {
 
-	if (level[u] < level[v]) swap(u,v);
-	int diff = level[u] - level[v];
-	u = walk(u, diff);
-	
-	if (u == v) return u;
+    public:
+        int par[LG][size];
+        int in[size], out[size], level[size];
+        vector<int> edges[size];
+        vector<int> euler_order(size);
+        int timer;
 
-	for (int i = LG - 1; i >= 0; --i) {
-		if (parent[i][u] && parent[i][u] != parent[i][v]) {
-			u = parent[i][u];
-			v = parent[i][v];
-		}
-	}
-	return parent[0][u];
-}
+        void init(root) {
+            timer = 0;
+            memset(par, -1, sizeof(par));
+            lca_dfs(root, -1, 0);
+        }
 
-int dist(int u, int v) {
-	return level[u] + level[v] - 2 * level[LCA(u, v)];
-}
+        void add_edge(int u, int v) {
+            edges[u].push_back(v);
+            edges[v].push_back(u);
+        }
 
-void preProcessLCA(int root) {
-    dfs(root, -1, 0);
-    precompute();
-}
+        int get_kth_ancestor(int v, int k) {
+            for (int i = LG - 1; i >= 0; --i) 
+                if ( k & (1<<i) )
+                    v = par[i][v];
+            
+            return v;
+        }
+
+        int LCA(int u, int v) {
+            if (depth[a] < depth[b]) swap(a, b);
+            int d = depth[a] - depth[b];
+            a =  get_kth_ancestor(a, d);
+            if (a == b) {
+                return v;
+            } else {
+                for (int i = LG - 1; i >= 0; --i) {
+                    if (par[i][u] != -1 && par[i][u] != par[i][v]) {
+                        u = par[i][u];
+                        v = par[i][v];
+                    }
+                }
+                return par[0][u];
+            }
+        }
+
+        /* Query Part */
+        int dist(int u, int v) {
+            int res = level[u] + level[v] - 2 * level[LCA(u, v)];
+            return res;
+        }
+};
 
 /* 
 Problem(Finding Closest ancestor of a specific color): http://www.usaco.org/index.php?page=viewproblem2&cpid=970
