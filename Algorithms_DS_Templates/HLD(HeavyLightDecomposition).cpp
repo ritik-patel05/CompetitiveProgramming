@@ -2,7 +2,7 @@
 
 // 0-indexing.
 // Requires SegTree template to use.
-template<int size, class T1, class T2> // {sze, NodeType, LazyType};
+template<int size, int LG, class T1, class T2> // {sze, NodeType, LazyType};
 class HeavyLightDecomposition {
 
     public:
@@ -14,9 +14,12 @@ class HeavyLightDecomposition {
                 chain[i] = i;
             }
             memset(lca_lift, -1, sizeof(lca_lift));
+            
         }
         /* Build LCA and HLD stuff */
-        void init_tree(vector<int> &arr, int root = 0) {
+        void init_tree(vector<T2> &arr, int root = 0) {
+            vector<T2> temp(N, 0);
+            segT.init(N, temp);
             lca_dfs(root, -1);
             dfs_size(root, -1, 0);
             dfs_chains(root, -1);
@@ -27,6 +30,7 @@ class HeavyLightDecomposition {
         void add_edge(int u, int v) {
             edges[u].push_back(v);
             edges[v].push_back(u);
+            // cout << edges[u].back() << " " << edges[v].back() << '\n';
         }
         /* K'th ancestor */
         int get_kth_ancestor(int v, int k) {
@@ -49,12 +53,13 @@ class HeavyLightDecomposition {
                         v = lca_lift[v][i];
                     }
                 }
+                return lca_lift[u][0];
             }
         }
         /* ---- QUERY ---- */
         /* excludes p */ 
         T2 query_chain(int v, int p) {
-            T2 res = Node::null_v;
+            T2 res = Node<int64_t>::null_v;
             while (depth[p] < depth[v]) {
                 int top = chain[v];
                 if (depth[top] <= depth[p]) {
@@ -69,14 +74,15 @@ class HeavyLightDecomposition {
 
         T2 query(int u, int v) {
             int lc = lca(u, v);
-            T2 res = chain_combine(res, query_chain(u, lc), query_chain(v, lc) );
+            T2 res = Node<int64_t>::null_v;
+            res = chain_combine(res, chain_combine(query_chain(u, lc), query_chain(v, lc) ) );
             return chain_combine(res, segT.query(label[lc], label[lc]).val );
         }
 
         /* ---- UPDATE ---- */
         /* excludes p */
         void update_chains(int v, int p, T2 val) {
-            while (dpeth[p] < depth[v]) {
+            while (depth[p] < depth[v]) {
                 int top = chain[v];
                 if (depth[top] <= depth[p]) {
                     int diff = depth[v] - depth[p];
@@ -95,7 +101,6 @@ class HeavyLightDecomposition {
         }
 
     private:
-        const int LG = 32 - __builtin_clz(size);
 
         vector<int> edges[size];
         int bigchild[size];
@@ -110,18 +115,19 @@ class HeavyLightDecomposition {
         int N;
 
         T2 chain_combine(T2 a, T2 b) {
-            T2 res = a ^ b;
+            T2 res = a + b;
             return res;
         }
 
         void lca_dfs(int v, int p) {
+            // cout << v << " " << p << '\n';
             lca_lift[v][0] = p;
             for (int i = 1; i < LG; ++i) {
                 if (lca_lift[v][i - 1] == -1) continue;
                 lca_lift[v][i] = lca_lift[lca_lift[v][i - 1]][i - 1];
             }
             for (auto &to: edges[v]) {
-                if (to == par) continue;
+                if (to == p) continue;
                 lca_dfs(to, v);
             }
         }
@@ -135,7 +141,7 @@ class HeavyLightDecomposition {
                 dfs_size(to, v, d + 1);
                 sz[v] += sz[to];
                 if (sz[to] > bigv) {
-                    bigc = v;
+                    bigc = to;
                     bigv = sz[to];
                 }
             }
@@ -150,7 +156,7 @@ class HeavyLightDecomposition {
                 dfs_chains(to, v);
             }
         }
-        void dfs_labels(vector<int> &arr, int v, int p) {
+        void dfs_labels(vector<T2> &arr, int v, int p) {
             label[v] = label_time++;
             segT.upd(label[v], arr[v]);
 
