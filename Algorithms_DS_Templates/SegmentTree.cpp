@@ -64,7 +64,7 @@ class SegmentTree {
             }
             
             isLazy[id] = false; //Reset this Node
-            lazy[id] = 0;
+            lazy[id] = Node::null_v;
             
         }
 
